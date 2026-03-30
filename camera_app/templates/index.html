@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fechadura Inteligente - Nova Roma</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f4f4f9;
+        padding: 20px;
+      }
+      #video-container {
+        margin: 20px auto;
+        border: 4px solid #333;
+        border-radius: 10px;
+        width: 640px;
+        overflow: hidden;
+      }
+      video {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      .btn {
+        padding: 15px 30px;
+        margin: 10px;
+        font-size: 18px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        color: white;
+      }
+      .btn-identify {
+        background-color: #28a745;
+      }
+      .btn-register {
+        background-color: #007bff;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🔐 Controle de Acesso Facial</h1>
+    <p>Aproxime-se da câmera para identificação</p>
+
+    <div id="video-container">
+      <video id="webcam" autoplay playsinline></video>
+    </div>
+
+    <div>
+      <button class="btn btn-identify" id="btn-identificar">
+        Desbloquear Porta
+      </button>
+      <button class="btn btn-register" id="btn-cadastrar">
+        Cadastrar Novo Rosto
+      </button>
+    </div>
+
+    <script>
+      const video = document.getElementById("webcam");
+
+      // Pede permissão e liga a câmera
+      if (navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices
+          .getUserMedia({ video: true })
+          .then(function (stream) {
+            video.srcObject = stream;
+          })
+          .catch(function (error) {
+            console.log("Erro ao acessar a câmera: ", error);
+            alert("Por favor, permita o acesso à câmera no seu navegador!");
+          });
+      }
+      const btnIdentificar = document.getElementById("btn-identificar");
+      const canvas = document.createElement("canvas"); // Tela invisível para tirar a foto
+      const context = canvas.getContext("2d");
+
+      btnIdentificar.addEventListener("click", () => {
+        // Muda o texto do botão para dar um feedback visual
+        btnIdentificar.innerText = "Processando...";
+
+        // 1. Ajusta o canvas e "tira um print" do vídeo
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // 2. Converte o print para texto (Base64)
+        const imageData = canvas.toDataURL("image/jpeg");
+
+        // 3. Envia para a rota /identify/ do Python
+        fetch("/identify/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image: imageData }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "sucesso") {
+              alert("✅ " + data.mensagem);
+            } else {
+              alert("❌ " + data.mensagem);
+            }
+            btnIdentificar.innerText = "Desbloquear Porta"; // Volta o botão ao normal
+          })
+          .catch((error) => {
+            console.error("Erro:", error);
+            btnIdentificar.innerText = "Desbloquear Porta";
+          });
+      });
+      const btnCadastrar = document.getElementById("btn-cadastrar");
+
+      btnCadastrar.addEventListener("click", () => {
+        // Pede o nome do usuário em uma janelinha
+        const nome = prompt("Digite o nome do novo usuário:");
+
+        // Se o cara apertar cancelar ou não digitar nada, a gente para por aqui
+        if (!nome) return;
+
+        btnCadastrar.innerText = "Salvando...";
+
+        // Tira o print da câmera
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = canvas.toDataURL("image/jpeg");
+
+        // Manda a foto E o nome lá pra rota /register/ do Python
+        fetch("/register/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image: imageData, nome: nome }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "sucesso") {
+              alert("✅ " + data.mensagem);
+            } else {
+              alert("❌ " + data.mensagem);
+            }
+            btnCadastrar.innerText = "Cadastrar Novo Rosto";
+          })
+          .catch((error) => {
+            console.error("Erro:", error);
+            btnCadastrar.innerText = "Cadastrar Novo Rosto";
+          });
+      });
+    </script>
+  </body>
+</html>
