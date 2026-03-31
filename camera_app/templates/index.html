@@ -114,7 +114,7 @@
         // Pede o nome do usuário em uma janelinha
         const nome = prompt("Digite o nome do novo usuário:");
 
-        // Se o cara apertar cancelar ou não digitar nada, a gente para por aqui
+        // Se a pessoa apertar cancelar ou não digitar nada, a gente para por aqui
         if (!nome) return;
 
         btnCadastrar.innerText = "Salvando...";
@@ -125,7 +125,7 @@
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         const imageData = canvas.toDataURL("image/jpeg");
 
-        // Manda a foto E o nome lá pra rota /register/ do Python
+        // Manda a foto e o nome lá pra rota /register/ do Python
         fetch("/register/", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
