@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="grid-2" style="align-items: center; margin-top: 40px;">
+    <div>
+        <h1>O futuro do controle de acesso chegou.</h1>
+        <p>Esqueça chaves perdidas, senhas esquecidas ou tags clonadas. O SmartLock utiliza inteligência artificial de ponta para garantir que apenas pessoas autorizadas abram suas portas, usando a biometria mais segura que existe: o seu rosto.</p>
+        
+        <div style="margin-top: 30px; display: flex; gap: 15px;">
+            <a href="{% url 'plataforma' %}" class="btn btn-primary">Testar Plataforma</a>
+            <a href="{% url 'dispositivo' %}" class="btn btn-outline">Ver Hardware</a>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>Por que o SmartLock?</h2>
+        <ul style="list-style-position: inside; color: var(--text-muted); line-height: 2;">
+            <li><strong>Problema:</strong> Sistemas tradicionais são vulneráveis a roubos (chaves) e engenharia social (senhas).</li>
+            <li><strong>Solução:</strong> Reconhecimento facial automatizado e em tempo real.</li>
+            <li><strong>Integração:</strong> Software de IA perfeitamente sincronizado com hardware IoT via protocolo MQTT.</li>
+            <li><strong>Objetivo:</strong> Aumentar a segurança patrimonial enquanto facilita o fluxo de entrada de usuários legítimos.</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

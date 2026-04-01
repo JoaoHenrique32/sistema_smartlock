@@ -9,7 +9,8 @@ import cv2
 import paho.mqtt.client as mqtt
 import os
 from deepface import DeepFace
-# (mantenha os outros imports que já estavam aí, como cv2, json, etc)
+from django.shortcuts import render
+# ... (mantenha os imports e as funções de API identify_face e register_face que já fizemos)
 
 # --- CONFIGURAÇÃO MQTT ---
 MQTT_BROKER = "localhost"
@@ -116,3 +117,16 @@ def register_face(request):
             return JsonResponse({"status": "erro", "mensagem": str(e)})
 
     return JsonResponse({"status": "invalido"})
+
+
+def home(request):
+    return render(request, 'home.html')
+
+def plataforma(request):
+    return render(request, 'plataforma.html')
+
+def dispositivo(request):
+    return render(request, 'dispositivo.html')
+
+def aplicativo(request):
+    return render(request, 'aplicativo.html')

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="grid-2" style="align-items: center;">
+    <div>
+        <h1>O Próximo Passo: Mobilidade</h1>
+        <p>A segurança moderna exige controle na palma da mão. O roadmap evolutivo do SmartLock inclui o desenvolvimento de um aplicativo mobile nativo, focado em gestão remota e auditoria em tempo real.</p>
+        
+        <div class="card" style="margin-top: 30px;">
+            <h2>Funcionalidades Previstas</h2>
+            <ul style="list-style-position: inside; color: var(--text-muted); line-height: 2;">
+                <li><strong>Monitoramento ao Vivo:</strong> Histórico de acessos com data, hora e nome do usuário.</li>
+                <li><strong>Gestão de Usuários:</strong> Cadastro e revogação de permissões remotamente.</li>
+                <li><strong>Abertura Remota:</strong> Liberação da porta a distância para visitantes.</li>
+                <li><strong>Push Notifications:</strong> Alertas imediatos em caso de tentativas de acesso de rostos desconhecidos (Acesso Negado).</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div style="display: flex; justify-content: center;">
+        <div style="width: 300px; height: 600px; background-color: #1e293b; border: 10px solid #334155; border-radius: 35px; padding: 20px; position: relative;">
+            <div style="width: 100px; height: 20px; background-color: #334155; border-radius: 0 0 15px 15px; margin: -20px auto 20px auto;"></div>
+            <h3 style="color: white; text-align: center; margin-bottom: 20px;">SmartLock App</h3>
+            <div style="background-color: #0f172a; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid #10b981;">
+                <span style="color: white; display: block; font-weight: bold;">Acesso Liberado</span>
+                <span style="color: #cbd5e1; font-size: 0.8rem;">João Henrique - Hoje, 14:30</span>
+            </div>
+            <div style="background-color: #0f172a; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid #ef4444;">
+                <span style="color: white; display: block; font-weight: bold;">Acesso Negado</span>
+                <span style="color: #cbd5e1; font-size: 0.8rem;">Desconhecido - Hoje, 11:15</span>
+            </div>
+            <button class="btn btn-primary" style="width: 100%; position: absolute; bottom: 30px; left: 0; width: calc(100% - 40px); margin: 0 20px;">🔓 Abrir Remotamente</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

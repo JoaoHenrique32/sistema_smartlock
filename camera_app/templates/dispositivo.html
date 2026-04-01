@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Engenharia de Hardware</h1>
+<p>A inteligência do software se conecta ao mundo físico através de uma arquitetura IoT robusta e de baixa latência.</p>
+
+<div class="grid-2">
+    <div class="card">
+        <h2>O Cérebro Físico: NodeMCU</h2>
+        <p>O coração do sistema no lado da porta é o microcontrolador <strong>ESP8266-12 V2 (NodeMCU)</strong>. Equipado com conectividade Wi-Fi nativa, ele atua como um "ouvinte" silencioso na rede.</p>
+        <p>Utilizando o protocolo MQTT, ele aguarda instruções criptografadas do servidor Django. Ao receber o comando de status "LIBERADO", ele aciona imediatamente o circuito de potência.</p>
+    </div>
+
+    <div class="card">
+        <h2>Ação Mecânica: Fechadura Solenoide</h2>
+        <p>A segurança física é garantida por uma <strong>fechadura solenoide</strong> de alta resistência. Em estado de repouso (sem energia), a porta permanece estritamente bloqueada.</p>
+        <p>Quando o NodeMCU valida o acesso, ele envia sinal para um módulo relé, que energiza a bobina do solenoide, retraindo o pino de metal e permitindo a abertura da porta por tempo determinado.</p>
+    </div>
+</div>
+
+<div class="card" style="text-align: center; margin-top: 20px;">
+    <h2>Fluxo de Dados</h2>
+    <p style="font-family: monospace; color: var(--primary-blue); font-size: 1.2rem; background: #0f172a; padding: 20px; border-radius: 8px;">
+        Rosto Detectado ➔ Processamento IA (Django) ➔ Broker MQTT ➔ NodeMCU ESP8266 ➔ Relé ➔ Fechadura Solenoide
+    </p>
+</div>
+{% endblock %}
