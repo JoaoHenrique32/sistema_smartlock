@@ -9,7 +9,7 @@ import cv2
 import paho.mqtt.client as mqtt
 import os
 from deepface import DeepFace
-from django.shortcuts import render
+
 # ... (mantenha os imports e as funções de API identify_face e register_face que já fizemos)
 
 # --- CONFIGURAÇÃO MQTT ---
@@ -21,9 +21,42 @@ try:
     client.loop_start()
 except Exception as e:
     print("Aviso: MQTT não conectou. Docker está ligado?")
-
+    
 def index(request):
-    return render(request, 'index.html')
+    """Renderiza a página principal com a lista de usuários cadastrados"""
+    db_path = os.path.join(settings.BASE_DIR, "banco_rostos")
+    usuarios_cadastrados = []
+    
+    if os.path.exists(db_path):
+        # Lista arquivos .jpg e remove a extensão para exibir o nome
+        for arquivo in os.listdir(db_path):
+            if arquivo.lower().endswith(('.jpg', '.jpeg', '.png')):
+                nome = os.path.splitext(arquivo)[0]
+                usuarios_cadastrados.append(nome)
+                
+    return render(request, 'index.html', {'usuarios': usuarios_cadastrados})
+
+@csrf_exempt
+def delete_face(request):
+    """Recebe o nome via POST e deleta a foto correspondente"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            nome_usuario = data.get('nome')
+            
+            # Caminho da foto (ajuste a extensão se necessário)
+            caminho_arquivo = os.path.join(settings.BASE_DIR, "banco_rostos", f"{nome_usuario}.jpg")
+            
+            if os.path.exists(caminho_arquivo):
+                os.remove(caminho_arquivo)
+                return JsonResponse({"status": "sucesso", "mensagem": f"Usuário {nome_usuario} removido!"})
+            else:
+                return JsonResponse({"status": "erro", "mensagem": "Arquivo não encontrado."})
+                
+        except Exception as e:
+            return JsonResponse({"status": "erro", "mensagem": str(e)})
+
+    return JsonResponse({"status": "invalido"})
 
 # O @csrf_exempt permite que o site envie dados sem dar erro de segurança na fase de testes
 @csrf_exempt 
@@ -118,15 +151,3 @@ def register_face(request):
 
     return JsonResponse({"status": "invalido"})
 
-
-def home(request):
-    return render(request, 'home.html')
-
-def plataforma(request):
-    return render(request, 'plataforma.html')
-
-def dispositivo(request):
-    return render(request, 'dispositivo.html')
-
-def aplicativo(request):
-    return render(request, 'aplicativo.html')
