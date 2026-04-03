@@ -52,15 +52,61 @@ pip install -r requirements.txt
 4. Subir Serviços (Docker)
 O projeto utiliza Docker para gerenciar o Banco de Dados e o Broker MQTT:
 
-docker-compose up -d
+instale o Docker Desktop e rode este codigo:
+
+Terminal
+
+docker run -d --name emqx -p 18083:18083 -p 1883:1883 emqx/emqx:latest
+docker run -d --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root mysql:latest
+
+
+Apos isso você precisa criar o Conector.
+
+Acesse http://localhost:18083 (admin / public).
+
+No menu lateral, vá em Integration -> Connectors.
+
+Clique em Create e escolha MySQL.
+
+Configurações cruciais:
+
+Server Host: Se estiver no Docker, use o IP da sua máquina ou o nome do container.
+
+Database: Nome do banco que você criou (ex: projeto_aula).
+
+User/Password: root e a senha que você definiu.
+
+
+A regra/rule define o que salvar. O EMQX usa um SQL próprio para filtrar as mensagens MQTT.
+
+Exemplo de SQL da Regra:
+
+SQL
+SELECT
+  topic,
+  payload as dados,
+  clientid
+FROM
+  "t/#"
+
+SELECT: O que eu quero pegar da mensagem.
+
+FROM "t/#": De quais tópicos eu quero ouvir (o # é um curinga para "qualquer coisa depois de t/").
+
+
+4. O Destino: A Ação (Data Integration)
+Dentro da regra, você adiciona uma Action. É aqui que você escreve o INSERT que vai para o MySQL.
+
+Template de SQL da Ação:
+
+INSERT INTO mensagens_recebidas (topico, payload) VALUES (${topic}, ${payload});
+
 
 5. Executar o Sistema
-
 
 Terminal
 python manage.py migrate
 python manage.py runserver
-
 
 Acesse em: http://127.0.0.1:8000
 
